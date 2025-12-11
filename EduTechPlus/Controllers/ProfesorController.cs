@@ -27,7 +27,7 @@ namespace EduTechPlus.Api.Controllers
         [HttpPost("detalle")]
         public async Task<IActionResult> RegistrarDetalle([FromBody] ProfesorDetalleDto dto)
         {
-            var usuario = await _context.Usuarios.FindAsync(dto.UsuarioId);
+            var usuario = await _context.usuarios.FindAsync(dto.UsuarioId);
             if (usuario == null)
                 return BadRequest("Usuario no encontrado.");
 

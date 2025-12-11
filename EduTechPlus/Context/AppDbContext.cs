@@ -14,20 +14,20 @@ namespace EduTechPlus.Api.Context
 
         // ========== TABLAS PRINCIPALES ==========
 
-        public DbSet<Usuario> Usuarios { get; set; } = null!;
-        public DbSet<Rol> Roles { get; set; } = null!;
+        public DbSet<usuario> usuarios { get; set; } = null!;
+        public DbSet<rol> roles { get; set; } = null!;
 
-        public DbSet<Profesor> Profesores { get; set; } = null!;
-        public DbSet<Alumno> Alumnos { get; set; } = null!;
+        public DbSet<profesor> Profesores { get; set; } = null!;
+        public DbSet<alumno> Alumnos { get; set; } = null!;
 
-        public DbSet<Materia> Materias { get; set; } = null!;
-        public DbSet<Grupo> Grupos { get; set; } = null!;
+        public DbSet<materia> Materias { get; set; } = null!;
+        public DbSet<grupo> Grupos { get; set; } = null!;
 
         public DbSet<Quiz> Quizzes { get; set; } = null!;
         public DbSet<QuizPregunta> QuizPreguntas { get; set; } = null!;
         public DbSet<QuizResultado> QuizResultados { get; set; } = null!;
 
-        public DbSet<Material> Materiales { get; set; } = null!;
+        public DbSet<material> Materiales { get; set; } = null!;
         public DbSet<Nota> Notas { get; set; } = null!;
 
         // ========== CONFIGURACIÓN SENCILLA ==========

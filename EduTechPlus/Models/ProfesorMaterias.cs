@@ -7,12 +7,12 @@ namespace EduTechApi.Models
     public class ProfesorMateria
     {
         [Required]
-        public int ProfesorId { get; set; }
-        public Profesor? Profesor { get; set; }
+        public int profesorid { get; set; }
+        public profesor? Profesor { get; set; }
 
         [Required]
-        public int MateriaId { get; set; }
-        public Materia? Materia { get; set; }
+        public int materiaid { get; set; }
+        public materia? Materia { get; set; }
     }
 }
 

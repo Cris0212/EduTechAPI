@@ -24,9 +24,9 @@ namespace EduTechApi.Controllers
                 .AsNoTracking()
                 .Select(a => new
                 {
-                    a.Id,
-                    Nombre = a.Usuario!.Nombre,
-                    Correo = a.Usuario.Correo
+                    a.id,
+                    Nombre = a.Usuario!.nombre,
+                    Correo = a.Usuario.correo
                 })
                 .ToListAsync();
 

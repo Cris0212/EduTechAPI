@@ -1,11 +1,11 @@
 ﻿using EduTechPlusAPI.Models;
 namespace EduTechPlusAPI.Models
 {
-    public class Materia
+    public class materia
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; } = null!;
+        public int id { get; set; }
+        public string nombre { get; set; } = null!;
 
-        public ICollection<MateriaProfesor> Profesores { get; set; } = new List<MateriaProfesor>();
+        public ICollection<materiaprofesor> Profesores { get; set; } = new List<materiaprofesor>();
     }
 }

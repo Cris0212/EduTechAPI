@@ -4,18 +4,18 @@ using EduTechPlusAPI.Models;
 
 namespace EduTechApi.Models
 {
-    public class AlumnoMateria
+    public class alumnomateria
     {
         [Required]
-        public int AlumnoId { get; set; }
-        public Alumno? Alumno { get; set; }
+        public int alumnoId { get; set; }
+        public alumno? Alumno { get; set; }
 
         [Required]
-        public int ProfesorId { get; set; }
-        public Profesor? Profesor { get; set; }
+        public int profesorId { get; set; }
+        public profesor? Profesor { get; set; }
 
         [Required]
-        public int MateriaId { get; set; }
-        public Materia? Materia { get; set; }
+        public int materiaId { get; set; }
+        public materia? Materia { get; set; }
     }
 }

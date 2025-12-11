@@ -2,12 +2,12 @@
 
 namespace EduTechPlusApi.Models
 {
-    public class Rol
+    public class rol
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; } = null!;
+        public int id { get; set; }
+        public string nombre { get; set; } = null!;
 
         // Relación -> Usuarios
-        public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+        public ICollection<usuario> Usuarios { get; set; } = new List<usuario>();
     }
 }

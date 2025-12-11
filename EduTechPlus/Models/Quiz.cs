@@ -5,16 +5,16 @@ namespace EduTechPlusAPI.Models
 {
     public class Quiz
     {
-        public int Id { get; set; }
-        public string Titulo { get; set; } = null!;
-        public DateTime FechaCreacion { get; set; }
+        public int id { get; set; }
+        public string titulo { get; set; } = null!;
+        public DateTime fechacreacion { get; set; }
 
-        public int ProfesorId { get; set; }
-        public Profesor Profesor { get; set; } = null!;
+        public int profesorid { get; set; }
+        public profesor Profesor { get; set; } = null!;
 
-        public ICollection<QuizPregunta> Preguntas { get; set; } = new List<QuizPregunta>();
-        public int GrupoId { get; internal set; }
-        public int MateriaId { get; internal set; }
+        public ICollection<QuizPregunta> preguntas { get; set; } = new List<QuizPregunta>();
+        public int grupoid { get; internal set; }
+        public int materiaid { get; internal set; }
         
     }
 }

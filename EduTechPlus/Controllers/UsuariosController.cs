@@ -20,14 +20,15 @@ namespace EduTechPlus.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var lista = await _context.Usuarios
+            var lista = await _context.usuarios
                 .AsNoTracking()
                 .Select(u => new
                 {
-                    u.Id,
-                    u.Nombre,
-                    u.Correo,
-                    u.Rol
+                    u.id,
+                    u.nombre,
+                    u.correo,
+                    u.rol,
+                    u.rolid
                 })
                 .ToListAsync();
 

@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-public class Profesor
+public class profesor
 {
-    public int Id { get; set; }
-    public int UsuarioId { get; set; }
-    public string Colegio { get; set; } = string.Empty;
-    public string Turno { get; set; } = string.Empty;
-    public int GruposQueDa { get; set; }
+    public int id { get; set; }
+    public int usuarioid { get; set; }
+    public string colegio { get; set; } = string.Empty;
+    public string turno { get; set; } = string.Empty;
+    public int gruposqueda { get; set; }
 }

@@ -2,12 +2,12 @@
 
 namespace EduTechPlusAPI.Models
 {
-    public class Alumno
+    public class alumno
     {
-        public int Id { get; set; }
-        public int UsuarioId { get; set; }
+        public int id { get; set; }
+        public int usuarioId { get; set; }
 
-        public Usuario Usuario { get; set; } = null!;
+        public usuario Usuario { get; set; } = null!;
 
         public ICollection<Nota> Notas { get; set; } = new List<Nota>();
         public ICollection<QuizResultado> ResultadosQuiz { get; set; } = new List<QuizResultado>();

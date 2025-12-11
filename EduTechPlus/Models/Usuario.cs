@@ -2,16 +2,16 @@
 
 namespace EduTechAPI.Models
 {
-    public class Usuario
+    public class usuario
     {
-        public int Id { get; set; }
+        public int id { get; set; }
 
-        public string Nombre { get; set; } = null!;
-        public string Correo { get; set; } = null!;
-        public string ContrasenaHash { get; set; } = null!;
+        public string nombre { get; set; } = null!;
+        public string correo { get; set; } = null!;
+        public string contrasenahash { get; set; } = null!;
 
-        public int RolId { get; set; }
-        public Rol Rol { get; set; } = null!;
+        public int rolid { get; set; }
+        public rol rol { get; set; } = null!;
 
        
     }

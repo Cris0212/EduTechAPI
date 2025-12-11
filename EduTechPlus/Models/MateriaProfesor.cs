@@ -3,14 +3,14 @@ using EduTechAPI.Models;
 
 namespace EduTechPlusAPI.Models
 {
-    public class MateriaProfesor
+    public class materiaprofesor
     {
-        public int Id { get; set; }
+        public int id { get; set; }
 
-        public int ProfesorId { get; set; }
-        public Profesor Profesor { get; set; } = null!;
+        public int profesorId { get; set; }
+        public profesor Profesor { get; set; } = null!;
 
-        public int MateriaId { get; set; }
-        public Materia Materia { get; set; } = null!;
+        public int materiaId { get; set; }
+        public materia Materia { get; set; } = null!;
     }
 }

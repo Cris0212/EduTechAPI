@@ -4,15 +4,15 @@ namespace EduTechAPI.Models
 {
     public class QuizResultado
     {
-        public int Id { get; set; }
+        public int id { get; set; }
 
-        public int AlumnoId { get; set; }
-        public Alumno Alumno { get; set; } = null!;
+        public int alumnoid { get; set; }
+        public alumno Alumno { get; set; } = null!;
 
-        public int QuizId { get; set; }
+        public int quizId { get; set; }
         public Quiz Quiz { get; set; } = null!;
 
-        public int Puntaje { get; set; }
+        public int puntaje { get; set; }
         public DateTime Fecha { get; set; }
     }
 }

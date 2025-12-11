@@ -15,9 +15,9 @@ namespace EduTechPlusAPI.Models
         public string RespuestaCorrecta { get; set; } = null!;
 
         public Quiz Quiz { get; set; } = null!;
-        public string Texto { get; internal set; }
-        public string Tipo { get; internal set; }
-        public string? OpcionesJson { get; internal set; }
-        public int Orden { get; internal set; }
+        public string texto { get; internal set; }
+        public string tipo { get; internal set; }
+        public string? opcionesjson { get; internal set; }
+        public int orden { get; internal set; }
     }
 }

@@ -32,25 +32,25 @@ namespace EduTechAPI.Controllers
             var query = _context.Materiales.AsNoTracking().AsQueryable();
 
             if (profesorId.HasValue)
-                query = query.Where(m => m.ProfesorId == profesorId.Value);
+                query = query.Where(m => m.profesorid == profesorId.Value);
 
             if (materiaId.HasValue)
-                query = query.Where(m => m.MateriaId == materiaId.Value);
+                query = query.Where(m => m.materiaid == materiaId.Value);
 
             if (grupoId.HasValue)
-                query = query.Where(m => m.GrupoId == grupoId.Value);
+                query = query.Where(m => m.grupoid == grupoId.Value);
 
             var lista = await query
                 .OrderByDescending(m => m.FechaPublicacion)
                 .Select(m => new MaterialListadoDto
                 {
                     Id = m.Id,
-                    Titulo = m.Titulo,
-                    Descripcion = m.Descripcion,
-                    Url = m.Url,
-                    ProfesorId = m.ProfesorId,
-                    MateriaId = m.MateriaId,
-                    GrupoId = m.GrupoId,
+                    Titulo = m.titulo,
+                    Descripcion = m.descripcion,
+                    Url = m.url,
+                    ProfesorId = m.profesorid,
+                    MateriaId = m.materiaid,
+                    GrupoId = m.grupoid,
                     FechaPublicacion = m.FechaPublicacion
                 })
                 .ToListAsync();
@@ -72,12 +72,12 @@ namespace EduTechAPI.Controllers
             var dto = new MaterialListadoDto
             {
                 Id = material.Id,
-                Titulo = material.Titulo,
-                Descripcion = material.Descripcion,
-                Url = material.Url,
-                ProfesorId = material.ProfesorId,
-                MateriaId = material.MateriaId,
-                GrupoId = material.GrupoId,
+                Titulo = material.titulo,
+                Descripcion = material.descripcion,
+                Url = material.url,
+                ProfesorId = material.profesorid,
+                MateriaId = material.materiaid,
+                GrupoId = material.grupoid,
                 FechaPublicacion = material.FechaPublicacion
             };
 
@@ -91,16 +91,16 @@ namespace EduTechAPI.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var material = new Material
+            var material = new material
             {
-                Titulo = dto.Titulo.Trim(),
-                Descripcion = string.IsNullOrWhiteSpace(dto.Descripcion)
+              titulo = dto.Titulo.Trim(),
+              descripcion = string.IsNullOrWhiteSpace(dto.Descripcion)
                     ? null
                     : dto.Descripcion.Trim(),
-                Url = dto.Url.Trim(),
-                ProfesorId = dto.ProfesorId,
-                MateriaId = dto.MateriaId,
-                GrupoId = dto.GrupoId,
+                url = dto.Url.Trim(),
+                profesorid = dto.ProfesorId,
+                materiaid = dto.MateriaId,
+                grupoid = dto.GrupoId,
                 FechaPublicacion = System.DateTime.UtcNow
             };
 
@@ -110,12 +110,12 @@ namespace EduTechAPI.Controllers
             var resultado = new MaterialListadoDto
             {
                 Id = material.Id,
-                Titulo = material.Titulo,
-                Descripcion = material.Descripcion,
-                Url = material.Url,
-                ProfesorId = material.ProfesorId,
-                MateriaId = material.MateriaId,
-                GrupoId = material.GrupoId,
+                Titulo = material.titulo,
+                Descripcion = material.descripcion,
+                Url = material.url,
+                ProfesorId = material.profesorid,
+                MateriaId = material.materiaid,
+                GrupoId = material.grupoid,
                 FechaPublicacion = material.FechaPublicacion
             };
 

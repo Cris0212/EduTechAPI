@@ -51,20 +51,20 @@ namespace EduTechPlus.Api.Controllers
         public async Task<IActionResult> Registro([FromBody] RegistroDto dto)
         {
             // Buscar el rol por nombre
-            var rol = await _context.Roles.FirstOrDefaultAsync(r => r.Nombre.ToLower() == dto.Rol.ToLower());
+            var rol = await _context.Roles.FirstOrDefaultAsync(r => r.nombre.ToLower() == dto.Rol.ToLower());
             if (rol == null)
                 return BadRequest("El rol proporcionado no existe. Debe ser 'Alumno' o 'Profesor'.");
 
             // Crear usuario
-            var usuario = new Usuario
+            var usuario = new usuario
             {
-                Nombre = dto.Nombre,
-                Correo = dto.Correo,
-                ContrasenaHash = HashPassword(dto.Contrasena), // Tu función de hash
-                RolId = rol.Id
+                nombre = dto.Nombre,
+                correo = dto.Correo,
+                contrasenahash = HashPassword(dto.Contrasena), // Tu función de hash
+                rolid = rol.id
             };
 
-            _context.Usuarios.Add(usuario);
+            _context.usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
             return Ok(new { mensaje = "Usuario registrado correctamente" });
@@ -73,19 +73,19 @@ namespace EduTechPlus.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Correo == dto.Correo);
+            var usuario = await _context.usuarios
+                .FirstOrDefaultAsync(u => u.correo == dto.Correo);
 
-            if (usuario == null || !VerifyPassword(dto.Contrasena, usuario.ContrasenaHash))
+            if (usuario == null || !VerifyPassword(dto.Contrasena, usuario.contrasenahash))
                 return Unauthorized("Credenciales inválidas.");
 
             return Ok(new
             {
                 mensaje = "Login correcto",
-                usuario.Id,
-                usuario.Nombre,
-                usuario.Correo,
-                usuario.Rol
+                usuario.id,
+                usuario.nombre,
+                usuario.correo,
+                usuario.rol
             });
         }
     }

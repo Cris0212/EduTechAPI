@@ -3,12 +3,12 @@ using EduTechAPI.Models;
 
 namespace EduTechPlusAPI.Models
 {
-    public class Grupo
+    public class grupo
     {
-        public int Id { get; set; }
-        public string Nombre { get; set; } = null!;
+        public int id { get; set; }
+        public string nombre { get; set; } = null!;
 
-        public int ProfesorId { get; set; }
-        public Profesor Profesor { get; set; } = null!;
+        public int profesorId { get; set; }
+        public profesor Profesor { get; set; } = null!;
     }
 }
