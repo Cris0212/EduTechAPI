@@ -1,19 +1,19 @@
-﻿using EduTechPlus.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using EduTechApi.Models;
 
-namespace EduTechApi.Models
+namespace EduTechPlusAPI.Models
 {
     public class Profesor
     {
         public int Id { get; set; }
-
-        [Required]
         public int UsuarioId { get; set; }
 
-        public Usuario? Usuario { get; set; }
+        public string Colegio { get; set; } = null!;
+        public string Turno { get; set; } = null!;
+        public int GruposQueDa { get; set; }
 
-        public ICollection<ProfesorMateria> ProfesorMaterias { get; set; } = new List<ProfesorMateria>();
-        public ICollection<AlumnoMateria> AlumnoMaterias { get; set; } = new List<AlumnoMateria>();
-        public ICollection<Nota> NotasPuestas { get; set; } = new List<Nota>();
+        public Usuario Usuario { get; set; } = null!;
+
+        public ICollection<MateriaProfesor> Materias { get; set; } = new List<MateriaProfesor>();
+        public ICollection<Grupo> Grupos { get; set; } = new List<Grupo>();
     }
 }

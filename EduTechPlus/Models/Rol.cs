@@ -1,18 +1,11 @@
-﻿using EduTechApi.Models;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-
-namespace EduTechPlus.Api.Models
+﻿namespace EduTechPlusAPI.Models
 {
     public class Rol
     {
         public int Id { get; set; }
+        public string Nombre { get; set; } = null!;
 
-        [Required]
-        [MaxLength(50)]
-        public string Nombre { get; set; } = string.Empty;
-
-        // Relación con usuarios
+        // Relación -> Usuarios
         public ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
     }
 }
