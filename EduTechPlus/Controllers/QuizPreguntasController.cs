@@ -1,13 +1,13 @@
-﻿using EduTechApi.Context;
-using EduTechPlus.Context;
-using EduTechPlus.Models;
+﻿using EduTechPlus.Api.Context;
+using EduTechPlus.DTOs;
+using EduTechPlusAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace EduTechPlus.Controllers
+namespace EduTechPlus.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -20,62 +20,24 @@ namespace EduTechPlus.Controllers
             _context = context;
         }
 
-        // GET: api/QuizPreguntas?quizId=1
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<QuizPregunta>>> GetPreguntas([FromQuery] int quizId)
-        {
-            if (quizId <= 0)
-                return BadRequest("Debe indicar un quizId válido.");
-
-            var lista = await _context.QuizPreguntas
-                .AsNoTracking()
-                .Where(p => p.QuizId == quizId)
-                .OrderBy(p => p.Orden)
-                .ToListAsync();
-
-            return Ok(lista);
-        }
-
-        // GET: api/QuizPreguntas/5
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<QuizPregunta>> GetPregunta(int id)
-        {
-            var pregunta = await _context.QuizPreguntas
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
-
-            if (pregunta == null)
-                return NotFound();
-
-            return Ok(pregunta);
-        }
-
         // POST: api/QuizPreguntas
-        public class CrearPreguntaDto
-        {
-            public int QuizId { get; set; }
-            public string Texto { get; set; } = string.Empty;
-            public string Tipo { get; set; } = "opcion_multiple"; // opcional
-            public string? OpcionesJson { get; set; }             // JSON con opciones si aplica
-            public string? RespuestaCorrecta { get; set; }
-            public int Orden { get; set; }
-        }
-
+        // Crea una nueva pregunta para un quiz
         [HttpPost]
-        public async Task<ActionResult<QuizPregunta>> CrearPregunta(CrearPreguntaDto dto)
+        public async Task<ActionResult<QuizPreguntaListaDto>> CrearPregunta([FromBody] QuizPreguntaCrearDto dto)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var existeQuiz = await _context.Quizzes.AnyAsync(q => q.Id == dto.QuizId);
-            if (!existeQuiz)
-                return BadRequest("El quiz indicado no existe.");
+            // Validar que exista el quiz
+            var quizExiste = await _context.Quizzes.AnyAsync(q => q.Id == dto.QuizId);
+            if (!quizExiste)
+                return BadRequest($"No existe un quiz con Id {dto.QuizId}");
 
             var pregunta = new QuizPregunta
             {
                 QuizId = dto.QuizId,
-                Texto = dto.Texto.Trim(),
-                Tipo = dto.Tipo.Trim(),
+                Texto = dto.Texto,
+                Tipo = dto.Tipo,
                 OpcionesJson = dto.OpcionesJson,
                 RespuestaCorrecta = dto.RespuestaCorrecta,
                 Orden = dto.Orden
@@ -84,34 +46,53 @@ namespace EduTechPlus.Controllers
             _context.QuizPreguntas.Add(pregunta);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetPregunta), new { id = pregunta.Id }, pregunta);
+            var result = new QuizPreguntaListaDto
+            {
+                Id = pregunta.Id,
+                QuizId = pregunta.QuizId,
+                Texto = pregunta.Texto,
+                Tipo = pregunta.Tipo,
+                OpcionesJson = pregunta.OpcionesJson,
+                Orden = pregunta.Orden
+            };
+
+            return CreatedAtAction(nameof(ObtenerPreguntasPorQuiz), new { quizId = pregunta.QuizId }, result);
         }
 
-        // PUT: api/QuizPreguntas/5
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> ActualizarPregunta(int id, QuizPregunta pregunta)
+        // GET: api/QuizPreguntas?quizId=5
+        // Lista las preguntas de un quiz
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<QuizPreguntaListaDto>>> ObtenerPreguntasPorQuiz([FromQuery] int quizId)
         {
-            if (id != pregunta.Id)
-                return BadRequest("El id de la URL no coincide con el del cuerpo.");
+            var quizExiste = await _context.Quizzes.AnyAsync(q => q.Id == quizId);
+            if (!quizExiste)
+                return NotFound($"No existe un quiz con Id {quizId}");
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            var preguntas = await _context.QuizPreguntas
+                .AsNoTracking()
+                .Where(p => p.QuizId == quizId)
+                .OrderBy(p => p.Orden)
+                .Select(p => new QuizPreguntaListaDto
+                {
+                    Id = p.Id,
+                    QuizId = p.QuizId,
+                    Texto = p.Texto,
+                    Tipo = p.Tipo,
+                    OpcionesJson = p.OpcionesJson,
+                    Orden = p.Orden
+                })
+                .ToListAsync();
 
-            var existe = await _context.QuizPreguntas.AnyAsync(p => p.Id == id);
-            if (!existe)
-                return NotFound();
-
-            _context.Entry(pregunta).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(preguntas);
         }
 
-        // DELETE: api/QuizPreguntas/5
+        // DELETE: api/QuizPreguntas/10
+        // Elimina una pregunta específica
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> EliminarPregunta(int id)
         {
-            var pregunta = await _context.QuizPreguntas.FindAsync(id);
+            var pregunta = await _context.QuizPreguntas.FirstOrDefaultAsync(p => p.Id == id);
+
             if (pregunta == null)
                 return NotFound();
 

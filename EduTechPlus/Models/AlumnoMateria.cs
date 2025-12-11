@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using EduTechAPI.Models;
+using EduTechPlusAPI.Models;
 
 namespace EduTechApi.Models
 {

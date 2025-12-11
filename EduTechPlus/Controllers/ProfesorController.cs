@@ -1,8 +1,9 @@
-﻿using EduTechApi.Context;
+﻿using System.Threading.Tasks;
+using EduTechPlus.Api.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EduTechApi.Controllers
+namespace EduTechPlus.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -15,21 +16,52 @@ namespace EduTechApi.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetProfesores()
+        public class ProfesorDetalleDto
         {
-            var lista = await _context.Profesores
-                .Include(p => p.Usuario)
-                .AsNoTracking()
-                .Select(p => new
-                {
-                    p.Id,
-                    Nombre = p.Usuario!.Nombre,
-                    Correo = p.Usuario.Correo
-                })
-                .ToListAsync();
+            public int UsuarioId { get; set; }
+            public string Colegio { get; set; } = "";
+            public string Turno { get; set; } = "";
+            public int GruposQueDa { get; set; }
+        }
 
-            return Ok(lista);
+        [HttpPost("detalle")]
+        public async Task<IActionResult> RegistrarDetalle([FromBody] ProfesorDetalleDto dto)
+        {
+            var usuario = await _context.Usuarios.FindAsync(dto.UsuarioId);
+            if (usuario == null)
+                return BadRequest("Usuario no encontrado.");
+
+            var yaTiene = await _context.Profesores
+                .AnyAsync(p => p.UsuarioId == dto.UsuarioId);
+
+            if (yaTiene)
+                return BadRequest("Este profesor ya tiene datos registrados.");
+
+            var profesor = new Profesor
+            {
+                UsuarioId = dto.UsuarioId,
+                Colegio = dto.Colegio,
+                Turno = dto.Turno,
+                GruposQueDa = dto.GruposQueDa
+            };
+
+            _context.Profesores.Add(profesor);
+            await _context.SaveChangesAsync();
+
+            return Ok(profesor);
+        }
+
+        [HttpGet("usuario/{usuarioId:int}")]
+        public async Task<IActionResult> ObtenerPorUsuario(int usuarioId)
+        {
+            var profesor = await _context.Profesores
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.UsuarioId == usuarioId);
+
+            if (profesor == null)
+                return NotFound();
+
+            return Ok(profesor);
         }
     }
 }

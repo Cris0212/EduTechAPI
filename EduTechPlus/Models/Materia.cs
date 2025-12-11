@@ -1,4 +1,5 @@
-﻿namespace EduTechPlusAPI.Models
+﻿using EduTechPlusAPI.Models;
+namespace EduTechPlusAPI.Models
 {
     public class Materia
     {
@@ -6,5 +7,6 @@
         public string Nombre { get; set; } = null!;
 
         public ICollection<MateriaProfesor> Profesores { get; set; } = new List<MateriaProfesor>();
+        public object ProfesorMaterias { get; internal set; }
     }
 }

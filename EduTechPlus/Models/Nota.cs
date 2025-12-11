@@ -11,5 +11,12 @@ namespace EduTechPlusAPI.Models
 
         public string Tipo { get; set; } = null!; // Diaria, Apreciación, Examen Final
         public decimal Calificacion { get; set; }
+        public int ProfesorId { get; internal set; }
+        public int MateriaId { get; internal set; }
+        public int Trimestre { get; internal set; }
+        public decimal Valor { get; internal set; }
+        public DateTime Fecha { get; internal set; }
+        public object Materia { get; internal set; }
+        public object Profesor { get; internal set; }
     }
 }

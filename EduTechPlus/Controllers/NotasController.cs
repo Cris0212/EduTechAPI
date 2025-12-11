@@ -1,10 +1,9 @@
-﻿using EduTechApi.Context;
-using EduTechApi.DTOs;
-using EduTechApi.Models;
+﻿using EduTechPlus.Api.Context;
+using EduTechPlusAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EduTechApi.Controllers
+namespace EduTechPlus.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -17,55 +16,66 @@ namespace EduTechApi.Controllers
             _context = context;
         }
 
-        [HttpPost("registrar")]
-        public async Task<IActionResult> RegistrarNota([FromBody] NotaDto dto)
+        // ============================
+        // 1. CREAR NOTA
+        // ============================
+        [HttpPost("crear")]
+        public async Task<IActionResult> CrearNota([FromBody] Nota nota)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var nota = new Nota
-            {
-                AlumnoId = dto.AlumnoId,
-                ProfesorId = dto.ProfesorId,
-                MateriaId = dto.MateriaId,
-                Trimestre = dto.Trimestre,
-                Tipo = dto.Tipo,
-                Valor = dto.Valor,
-                Fecha = DateTime.UtcNow
-            };
+            if (nota == null)
+                return BadRequest("Datos inválidos");
 
             _context.Notas.Add(nota);
             await _context.SaveChangesAsync();
 
-            return Ok("Nota registrada correctamente.");
+            return Ok(new
+            {
+                mensaje = "Nota registrada correctamente",
+                nota
+            });
         }
 
-        [HttpGet("alumno/{alumnoId:int}")]
-        public async Task<IActionResult> GetNotasAlumno(int alumnoId, [FromQuery] int? trimestre = null)
+        // ============================
+        // 2. LISTAR NOTAS POR ALUMNO
+        // ============================
+        [HttpGet("alumno/{alumnoId}")]
+        public async Task<IActionResult> ObtenerPorAlumno(int alumnoId)
         {
-            var query = _context.Notas
-                .Include(n => n.Materia)
-                .Include(n => n.Profesor).ThenInclude(p => p.Usuario)
-                .Where(n => n.AlumnoId == alumnoId)
-                .AsNoTracking();
+            var notas = await _context.Notas
+                                      .Where(n => n.AlumnoId == alumnoId)
+                                      .ToListAsync();
 
-            if (trimestre.HasValue)
-                query = query.Where(n => n.Trimestre == trimestre.Value);
+            return Ok(notas);
+        }
 
-            var lista = await query
-                .Select(n => new
-                {
-                    n.Id,
-                    n.Trimestre,
-                    n.Tipo,
-                    n.Valor,
-                    Materia = n.Materia!.Nombre,
-                    Profesor = n.Profesor!.Usuario!.Nombre,
-                    n.Fecha
-                })
-                .ToListAsync();
+        // ============================
+        // 3. LISTAR NOTAS POR MATERIA
+        // ============================
+        [HttpGet("materia/{materiaId}")]
+        public async Task<IActionResult> ObtenerPorMateria(int materiaId)
+        {
+            var notas = await _context.Notas
+                                      .Where(n => n.MateriaId == materiaId)
+                                      .ToListAsync();
 
-            return Ok(lista);
+            return Ok(notas);
+        }
+
+        // ============================
+        // 4. BORRAR NOTA
+        // ============================
+        [HttpDelete("borrar/{id}")]
+        public async Task<IActionResult> BorrarNota(int id)
+        {
+            var nota = await _context.Notas.FindAsync(id);
+
+            if (nota == null)
+                return NotFound("Nota no encontrada");
+
+            _context.Notas.Remove(nota);
+            await _context.SaveChangesAsync();
+
+            return Ok("Nota eliminada correctamente");
         }
     }
 }

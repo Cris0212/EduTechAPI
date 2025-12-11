@@ -1,9 +1,10 @@
-﻿using EduTechApi.Context;
-using EduTechApi.DTOs;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using EduTechPlus.Api.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace EduTechApi.Controllers
+namespace EduTechPlus.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -17,16 +18,16 @@ namespace EduTechApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UsuarioListadoDto>>> GetUsuarios()
+        public async Task<IActionResult> Get()
         {
             var lista = await _context.Usuarios
                 .AsNoTracking()
-                .Select(u => new UsuarioListadoDto
+                .Select(u => new
                 {
-                    Id = u.Id,
-                    Nombre = u.Nombre,
-                    Correo = u.Correo,
-                    Rol = u.Rol
+                    u.Id,
+                    u.Nombre,
+                    u.Correo,
+                    u.Rol
                 })
                 .ToListAsync();
 

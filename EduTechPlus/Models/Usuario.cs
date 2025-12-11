@@ -1,6 +1,6 @@
-﻿using EduTechPlus.Api.Models;
+﻿using EduTechPlusApi.Models;
 
-namespace EduTechPlusAPI.Models
+namespace EduTechAPI.Models
 {
     public class Usuario
     {
@@ -12,5 +12,7 @@ namespace EduTechPlusAPI.Models
 
         public int RolId { get; set; }
         public Rol Rol { get; set; } = null!;
+
+       
     }
 }

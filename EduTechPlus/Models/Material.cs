@@ -1,8 +1,5 @@
-﻿using EduTechApi.Models;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.RegularExpressions;
 
 namespace EduTechAPI.Models
 {
@@ -32,9 +29,5 @@ namespace EduTechAPI.Models
         public int GrupoId { get; set; }
 
         public DateTime FechaPublicacion { get; set; } = DateTime.UtcNow;
-
-        // Navegación (opcional, solo si tienes estas clases)
-        public Profesor? Profesor { get; set; }
-        public Materia? Materia { get; set; }
     }
 }

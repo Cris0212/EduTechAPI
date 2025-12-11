@@ -1,12 +1,12 @@
-﻿using System.Text.RegularExpressions;
-using EduTechApi.Context;
-using EduTechApi.DTOs;
-using EduTechApi.Models;
+﻿using EduTechAPI.Models;
+using EduTechPlus.Api.Context;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using BC = BCrypt.Net.BCrypt;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EduTechApi.Controllers
+namespace EduTechPlus.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -19,107 +19,58 @@ namespace EduTechApi.Controllers
             _context = context;
         }
 
-        private bool EsContrasenaSegura(string password, out string mensaje)
+        public class RegistroDto
         {
-            mensaje = string.Empty;
+            public string Nombre { get; set; } = "";
+            public string Correo { get; set; } = "";
+            public string Contrasena { get; set; } = "";
+            public string Rol { get; set; } = "Alumno"; // Alumno / Profesor
+        }
 
-            if (password.Length < 8)
-            {
-                mensaje = "La contraseña debe tener al menos 8 caracteres.";
-                return false;
-            }
+        public class LoginDto
+        {
+            public string Correo { get; set; } = "";
+            public string Contrasena { get; set; } = "";
+        }
 
-            if (password.Length > 100)
-            {
-                mensaje = "La contraseña no debe superar los 100 caracteres.";
-                return false;
-            }
+        private string HashPassword(string password)
+        {
+            using var sha = SHA256.Create();
+            var bytes = Encoding.UTF8.GetBytes(password);
+            var hash = sha.ComputeHash(bytes);
+            return Convert.ToBase64String(hash);
+        }
 
-            if (!Regex.IsMatch(password, "[A-Z]"))
-            {
-                mensaje = "La contraseña debe contener al menos una letra mayúscula.";
-                return false;
-            }
-
-            if (!Regex.IsMatch(password, "[a-z]"))
-            {
-                mensaje = "La contraseña debe contener al menos una letra minúscula.";
-                return false;
-            }
-
-            if (!Regex.IsMatch(password, "[0-9]"))
-            {
-                mensaje = "La contraseña debe contener al menos un número.";
-                return false;
-            }
-
-            if (!Regex.IsMatch(password, "[^a-zA-Z0-9]"))
-            {
-                mensaje = "La contraseña debe contener al menos un símbolo (ej: !, @, #, $, %).";
-                return false;
-            }
-
-            string[] comunes =
-            {
-                "12345678",
-                "password",
-                "qwerty",
-                "123456",
-                "abc123",
-                "panama123"
-            };
-
-            if (comunes.Contains(password.ToLower()))
-            {
-                mensaje = "La contraseña es demasiado común, por favor usa otra más segura.";
-                return false;
-            }
-
-            return true;
+        private bool VerifyPassword(string password, string hash)
+        {
+            return HashPassword(password) == hash;
         }
 
         [HttpPost("registro")]
-        public async Task<IActionResult> Registro([FromBody] RegistroRequest dto)
+        public async Task<IActionResult> Registro([FromBody] RegistroDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            if (string.IsNullOrWhiteSpace(dto.Nombre) ||
+                string.IsNullOrWhiteSpace(dto.Correo) ||
+                string.IsNullOrWhiteSpace(dto.Contrasena))
+                return BadRequest("Nombre, correo y contraseña son obligatorios.");
 
-            if (!EsContrasenaSegura(dto.Contrasena, out var errorPass))
-                return BadRequest(errorPass);
-
-            bool existeCorreo = await _context.Usuarios.AnyAsync(u => u.Correo == dto.Correo);
-            if (existeCorreo)
-                return BadRequest("El correo ya está registrado.");
-
-            string hash = BC.HashPassword(dto.Contrasena);
+            var existe = await _context.Usuarios.AnyAsync(u => u.Correo == dto.Correo);
+            if (existe)
+                return BadRequest("Ya existe un usuario con ese correo.");
 
             var usuario = new Usuario
             {
                 Nombre = dto.Nombre.Trim(),
                 Correo = dto.Correo.Trim(),
-                ContrasenaHash = hash,
-                Rol = dto.Rol
+                ContrasenaHash = HashPassword(dto.Contrasena.Trim())
             };
 
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            if (dto.Rol == "Alumno")
-            {
-                var alumno = new Alumno { UsuarioId = usuario.Id };
-                _context.Alumnos.Add(alumno);
-            }
-            else if (dto.Rol == "Profesor")
-            {
-                var profesor = new Profesor { UsuarioId = usuario.Id };
-                _context.Profesores.Add(profesor);
-            }
-
-            await _context.SaveChangesAsync();
-
             return Ok(new
             {
-                mensaje = "Usuario registrado correctamente.",
+                mensaje = "Usuario registrado",
                 usuario.Id,
                 usuario.Nombre,
                 usuario.Correo,
@@ -128,24 +79,17 @@ namespace EduTechApi.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest dto)
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var usuario = await _context.Usuarios
                 .FirstOrDefaultAsync(u => u.Correo == dto.Correo);
 
-            if (usuario == null)
-                return Unauthorized("Correo o contraseña incorrectos.");
-
-            bool ok = BC.Verify(dto.Contrasena, usuario.ContrasenaHash);
-            if (!ok)
-                return Unauthorized("Correo o contraseña incorrectos.");
+            if (usuario == null || !VerifyPassword(dto.Contrasena, usuario.ContrasenaHash))
+                return Unauthorized("Credenciales inválidas.");
 
             return Ok(new
             {
-                mensaje = "Login exitoso.",
+                mensaje = "Login correcto",
                 usuario.Id,
                 usuario.Nombre,
                 usuario.Correo,

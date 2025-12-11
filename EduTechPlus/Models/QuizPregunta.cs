@@ -1,4 +1,4 @@
-﻿using EduTechPlus.Models;
+﻿using EduTechPlusAPI.Models;
 
 namespace EduTechPlusAPI.Models
 {
@@ -15,5 +15,9 @@ namespace EduTechPlusAPI.Models
         public string RespuestaCorrecta { get; set; } = null!;
 
         public Quiz Quiz { get; set; } = null!;
+        public string Texto { get; internal set; }
+        public string Tipo { get; internal set; }
+        public string? OpcionesJson { get; internal set; }
+        public int Orden { get; internal set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿using EduTechApi.Context;
+﻿
 using EduTechApi.DTOs;
 using EduTechApi.Models;
+using EduTechPlus.Api.Context;
+using EduTechPlusAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 

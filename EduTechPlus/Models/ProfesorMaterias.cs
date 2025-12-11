@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using EduTechAPI.Models;
+using EduTechPlusAPI.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace EduTechApi.Models
 {
@@ -11,6 +13,7 @@ namespace EduTechApi.Models
         [Required]
         public int MateriaId { get; set; }
         public Materia? Materia { get; set; }
+        public object? Id { get; internal set; }
     }
 }
 

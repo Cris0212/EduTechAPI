@@ -1,4 +1,4 @@
-﻿using EduTechApi.Models;
+﻿using EduTechAPI.Models;
 
 namespace EduTechPlusAPI.Models
 {

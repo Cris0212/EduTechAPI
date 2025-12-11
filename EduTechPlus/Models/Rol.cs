@@ -1,4 +1,6 @@
-﻿namespace EduTechPlusAPI.Models
+﻿using EduTechAPI.Models;
+
+namespace EduTechPlusApi.Models
 {
     public class Rol
     {
