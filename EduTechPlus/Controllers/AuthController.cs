@@ -25,6 +25,7 @@ namespace EduTechPlus.Api.Controllers
             public string Correo { get; set; } = "";
             public string Contrasena { get; set; } = "";
             public string Rol { get; set; } = "Alumno"; // Alumno / Profesor
+            public object?[]? RolId { get; internal set; }
         }
 
         public class LoginDto
@@ -49,33 +50,24 @@ namespace EduTechPlus.Api.Controllers
         [HttpPost("registro")]
         public async Task<IActionResult> Registro([FromBody] RegistroDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Nombre) ||
-                string.IsNullOrWhiteSpace(dto.Correo) ||
-                string.IsNullOrWhiteSpace(dto.Contrasena))
-                return BadRequest("Nombre, correo y contraseña son obligatorios.");
+            // Buscar el rol por nombre
+            var rol = await _context.Roles.FirstOrDefaultAsync(r => r.Nombre.ToLower() == dto.Rol.ToLower());
+            if (rol == null)
+                return BadRequest("El rol proporcionado no existe. Debe ser 'Alumno' o 'Profesor'.");
 
-            var existe = await _context.Usuarios.AnyAsync(u => u.Correo == dto.Correo);
-            if (existe)
-                return BadRequest("Ya existe un usuario con ese correo.");
-
+            // Crear usuario
             var usuario = new Usuario
             {
-                Nombre = dto.Nombre.Trim(),
-                Correo = dto.Correo.Trim(),
-                ContrasenaHash = HashPassword(dto.Contrasena.Trim())
+                Nombre = dto.Nombre,
+                Correo = dto.Correo,
+                ContrasenaHash = HashPassword(dto.Contrasena), // Tu función de hash
+                RolId = rol.Id
             };
 
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
-            return Ok(new
-            {
-                mensaje = "Usuario registrado",
-                usuario.Id,
-                usuario.Nombre,
-                usuario.Correo,
-                usuario.Rol
-            });
+            return Ok(new { mensaje = "Usuario registrado correctamente" });
         }
 
         [HttpPost("login")]

@@ -7,5 +7,4 @@ public class Profesor
     public string Colegio { get; set; } = string.Empty;
     public string Turno { get; set; } = string.Empty;
     public int GruposQueDa { get; set; }
-    public object Usuario { get; internal set; }
 }

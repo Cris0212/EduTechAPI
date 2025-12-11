@@ -1,14 +1,18 @@
-﻿
-using EduTechPlus.Api.Context;
+﻿using EduTechPlus.Api.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// CORS abierto para que el HTML pueda llamar al API
+// DbContext PostgreSQL
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// CORS abierto para desarrollo
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -19,27 +23,19 @@ builder.Services.AddCors(options =>
     });
 });
 
-// DbContext
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-
 var app = builder.Build();
 
-// Swagger siempre disponible
+// Middleware
+app.UseCors("AllowAll");
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "EduTech API v1");
-    c.RoutePrefix = "swagger";
+    c.RoutePrefix = string.Empty; // Swagger se abre en la raíz /
 });
 
-// ⚠️ IMPORTANTE: sin HTTPS redirection, porque con Tailscale estás usando http
-// app.UseHttpsRedirection();
-
-app.UseCors("AllowAll");
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

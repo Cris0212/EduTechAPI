@@ -15,6 +15,6 @@ namespace EduTechPlusAPI.Models
         public ICollection<QuizPregunta> Preguntas { get; set; } = new List<QuizPregunta>();
         public int GrupoId { get; internal set; }
         public int MateriaId { get; internal set; }
-        public object Descripcion { get; internal set; }
+        
     }
 }

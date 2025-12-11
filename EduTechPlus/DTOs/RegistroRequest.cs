@@ -22,6 +22,6 @@ namespace EduTechApi.DTOs
         [Required]
         [RegularExpression("^(Alumno|Profesor)$",
             ErrorMessage = "El rol debe ser Alumno o Profesor.")]
-        public string Rol { get; set; } = string.Empty;
+        public int RolId { get; set; }
     }
 }

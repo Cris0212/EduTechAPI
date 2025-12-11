@@ -16,7 +16,5 @@ namespace EduTechPlusAPI.Models
         public int Trimestre { get; internal set; }
         public decimal Valor { get; internal set; }
         public DateTime Fecha { get; internal set; }
-        public object Materia { get; internal set; }
-        public object Profesor { get; internal set; }
     }
 }

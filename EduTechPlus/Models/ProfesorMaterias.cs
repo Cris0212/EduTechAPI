@@ -13,7 +13,6 @@ namespace EduTechApi.Models
         [Required]
         public int MateriaId { get; set; }
         public Materia? Materia { get; set; }
-        public object? Id { get; internal set; }
     }
 }
 
